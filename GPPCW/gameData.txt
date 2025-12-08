@@ -1,0 +1,20 @@
+Item: Strongbox
+Description: A sturdy box. It has seen better times.
+Contents: Red Key, Letter
+Keys: Screwdriver
+
+Location: 1
+Name: Outside building
+Description: You are standing in front of a small building.
+Contents: Screwdriver, Strongbox
+WEST 3
+NORTH 2, Red Key
+IN 2, Red Key
+
+Location: 2
+Name: Inside building
+Description: You are inside a building, a well house for a large
+spring.
+Contents: Rubber Duck
+SOUTH 1
+OUT 
