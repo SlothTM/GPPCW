@@ -17,7 +17,8 @@ Location::Location(int i, string n, string de, list <Item*> co, map <string, Loc
 		connections(cn),
 		doorKey(dk)
 	{
-	for (Item* i : co) {
+	for (Item* i : co) 
+	{
 		additem(i);
 	}
 	}
@@ -117,4 +118,20 @@ Location::Location(int i, string n, string de, list <Item*> co, map <string, Loc
 		player->setLocation(moveto);
 		moveto->print();
 		return true;
+	}
+
+	void Location::addConnections(map<string, int>& connIds, map<int, Location*>& locationById) {
+		for (auto& pair : connIds) {
+			string dir = pair.first;
+			int l_id = pair.second;
+
+			auto iterator = locationById.find(l_id);
+
+			if (iterator != locationById.end()) {
+				connections[dir] = iterator->second;
+			}
+			else {
+				std::cout << "Warning: Location ID " << l_id << " not found for connection " << dir << std::endl;
+			}
+		}
 	}

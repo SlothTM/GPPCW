@@ -58,22 +58,27 @@ Container::Container(string n, string de, Item* k , list<Item*> cl) :
 	{
 		isopen = true;
 		vector<Item*> toMove;
-		cout << "You opened the " << getname() << " and found: "<< endl;
+		if (p->hasItem(containerKey)) {
+			cout << "You opened the " << getname() << " and found: " << endl;
 
-		for (Item* i : contents)
-		{
-			toMove.push_back(i);
-		}
+			for (Item* i : contents)
+			{
+				toMove.push_back(i);
+			}
 
-		for (Item* i : toMove)
-		{			
-			cout << "    " << i->getname() << endl;
-			contents.remove(i); //item taken out of container
-			l->additem(i);
-			p->takeItem(i); //adds item to location to stop player from softlocking
-			l->removeItem(this);
+			for (Item* i : toMove)
+			{
+				cout << "    " << i->getname() << endl;
+				contents.remove(i); //item taken out of container
+				l->additem(i);
+				p->takeItem(i); //adds item to location to stop player from softlocking
+				l->removeItem(this);
+			}
+			cout << endl;
 		}
-		cout << endl;
+		else {
+			cout << "You need a: " << containerKey->getname() << " To open this!";
+		}
 	}
 
 	void Container::additem(Item* i)

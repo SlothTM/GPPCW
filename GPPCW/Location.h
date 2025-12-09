@@ -43,4 +43,6 @@ public:
 		void additem(Item* i);
 
 		bool move(Player* player, string& direction);
+
+		void addConnections(map<string, int>& connIds, map<int, Location*>& locationById);
 };

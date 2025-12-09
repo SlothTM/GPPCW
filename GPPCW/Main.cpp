@@ -16,6 +16,7 @@ using namespace std;
 
 vector<Item*> createdItems;
 vector<Location*> createdLocations;
+map<int, map<string, int>> tempConnIds;
 map<int, Location*> locationById;
 
 Item* newItem(ifstream &f , string n) {
@@ -124,7 +125,6 @@ Location* newLocation(ifstream& f, int i) {
     int cn;
     Item* cd = nullptr;
     list <Item*> tc;
-    map <string, int> tempcn;
     map <string, Item*> dk;
 
     while (getline(f, cline)) {
@@ -211,10 +211,9 @@ Location* newLocation(ifstream& f, int i) {
 
             else {
                 cn = stoi(cline.substr(start));
-
-
             }
-            tempcn["NORTH"] = cn;
+            
+            tempConnIds[i]["NORTH"] = cn;
         }
         else if (cline.substr(0, cline.find(" ")) == "EAST") {
             size_t start = cline.find(" ") + 1;
@@ -250,7 +249,7 @@ Location* newLocation(ifstream& f, int i) {
 
 
             }
-            tempcn["EAST"] = cn;
+            tempConnIds[i]["EAST"] = cn;
         }
 
         else if (cline.substr(0, cline.find(" ")) == "SOUTH") {
@@ -287,7 +286,7 @@ Location* newLocation(ifstream& f, int i) {
 
 
             }
-            tempcn["SOUTH"] = cn;
+            tempConnIds[i]["SOUTH"] = cn;
         }
 
         else if (cline.substr(0, cline.find(" ")) == "WEST") {
@@ -319,10 +318,8 @@ Location* newLocation(ifstream& f, int i) {
             }
             else {
                 cn = stoi(cline.substr(start));
-
-
             }
-            tempcn["WEST"] = cn;
+            tempConnIds[i]["WEST"] = cn;
         }
 
 
@@ -339,6 +336,9 @@ Location* newLocation(ifstream& f, int i) {
     return newLocal;
 
 }
+
+
+
 void readData() 
 {
     ifstream worldData("gameData.txt");
@@ -377,22 +377,21 @@ void readData()
     }
 }
 
+void fixConnections() {
+    for (Location* l : createdLocations) {
+        int l_Id = l->getnumber();
+        if (tempConnIds.count(l_Id)) {
+            l->addConnections(tempConnIds[l_Id], locationById);
+        }
+    }
+}
+
 
 int main() {
-    
-    // --- Create Items ---
-    //Item* redKey = new Item("Red Key", "A small red key.");
-    //Item* rope = new Item("Rope", "A sturdy rope.");
-    //Container* chest = new Container("Chest", "An old wooden chest", redKey);
-    //Item* gem = new Item("Gem", "A shiny gem");
-
-
-    // Add gem inside chest
-    //chest->additem(gem);
-
-    // --- Create Locations ---
 
     readData();
+
+    fixConnections();
 
     list<Item*> playerInventory = {};
     Player player(createdLocations[0], playerInventory);
@@ -488,13 +487,13 @@ int main() {
 
                     string temp = i->getname();
 
-                    for (char& c : temp) {
+                    for (char& c : temp) { //converting to upper case
                         c = toupper(c);
                     }
-                    cout << "DEBUG comparing: " << target << " to item: " << temp << endl;
+                    cout << "DEBUG comparing: " << target << " to item: " << temp << endl; //cehck for item
 
 
-                    if ((" " + temp) == target) {
+                    if ((" " + temp) == target) { 
                         player.openItem(i);
                         found = true;
                         break;
@@ -509,6 +508,55 @@ int main() {
             
             else if (action == "QUIT") {
                 quit = true;
+            }
+            else if (action == "NORTH") {
+                string NORTH = "NORTH";
+                currentlocal->move(&player, NORTH);
+            }
+            else if (action == "EAST") {
+                string EAST = "EAST";
+                currentlocal->move(&player, EAST);
+            }
+            else if (action == "SOUTH") {
+                string SOUTH = "SOUTH";
+                currentlocal->move(&player,SOUTH );
+            }
+            else if (action == "WEST") {
+                string WEST = "WEST";
+                currentlocal->move(&player, WEST);
+            }
+
+            else if (action == "INVENTORY") {
+                cout << "ITEMS IN BAG ARE: " << endl;
+                for (Item* i : player.getinventory()) {
+                    cout << "    " << i->getname() << endl;
+                }
+                cout << endl;
+            }
+
+            else if (action == "WHAT") {
+                bool found = false;
+
+                for (Item* i : createdItems) {
+
+                    string upper = i->getname();
+                    for (char& c : upper) {
+                        c = toupper(c);
+                    }
+                    if ((" " + upper) == target) {
+                        cout << "Item description: " << endl;
+                        cout << "    " << i->getdescription() << endl;
+                        found = true;
+                        break;
+                    }
+
+                }
+
+                if (!found) {
+                    cout << "Item doesnt exist" << endl;
+                }
+                
+                cout << endl;
             }
             else if (action == "HELP") {
                 cout << "// --------------------------" << endl;

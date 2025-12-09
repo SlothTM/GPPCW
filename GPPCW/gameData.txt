@@ -10,6 +10,9 @@ Description: Could be useful to pry a box open.
 Item: Rubber Duck
 Description: Youve finally found it, your most prized posession.
 
+Item: BFG
+Description: Its a pretty big gun?
+
 Item: Strongbox
 Description: A sturdy box. It has seen better times.
 Contents: Red Key, Letter
@@ -28,4 +31,11 @@ Name: Inside building
 Description: You are inside a building, a well house for a large spring.
 Contents: Rubber Duck
 SOUTH 1
+
+Location: 3
+Name: BEGGING ROOM
+Description: YOU BEG FOR THIS TO BE OVER
+Contents: BFG
+SOUTH 1
+OUT 1
 
