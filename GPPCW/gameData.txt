@@ -1,41 +1,62 @@
-Item: Red Key
-Description: Where there is a red key there must be a red door
+Item: Castle Key
+Description: Dude its for the door right in front of you, I don't know how you expect to get the princess out of her room...
 
-Item: Letter
-Description: Its contents are in a language you dont understand.
+Item: Crowbar
+Description: Could be used to pry something open.
 
-Item: Screwdriver
-Description: Could be useful to pry a box open.
+Item: West Wing Key
+Description: Key to gain access to the west wing of the castle.
 
-Item: Rubber Duck
-Description: Youve finally found it, your most prized posession.
+Item: Crumpled Letters
+Description: Its a bunch of letter from the princess to someone but you cant quite make out their name her handwriting is horrible. It would seem she made a lot of drafts.
 
-Item: BFG
-Description: Its a pretty big gun?
+Item: Farewell Letter?
+Description: Her horrid handwriting immediately gives you a headache, You can make out a name ... Prince Recluse... what is that French or something? you can just about make out another word... ELOPE!???
 
-Item: Strongbox
-Description: A sturdy box. It has seen better times.
-Contents: Red Key, Letter
-Keys: Screwdriver
+
+Item: Bedroom Key
+Description: Key to Hikkiko's bedroom , but how can she have locked herself in if the key is out here?
+
+Item: Rotting Dresser
+Description: Looks pretty pryable...
+Contents: West Wing Key, Crumpled Letters
+Keys: Crowbar
 
 Location: 1
-Name: Outside building
-Description: You are standing in front of a small building.
-Contents: Screwdriver, Strongbox
-WEST 3
-NORTH 2, Red Key
-IN 2, Red Key
+Name: Castle Entrance
+Description: Entrance to the great castle of princess hikkiko she's locked herself in her castle once again and its your job to get her out!
+Contents: Castle Key
+NORTH 2, Castle Key
+IN 2, Castle Key
 
 Location: 2
-Name: Inside building
-Description: You are inside a building, a well house for a large spring.
-Contents: Rubber Duck
+Name: Castle Great Hall
+Description: A grand entrance to a castle connected to all rooms of the castle, theres an open cupboard with something sticking out
+Contents: Crowbar
+OUT 1
 SOUTH 1
+EAST 3
+WEST 4, West Wing Key
+NORTH 5, Bedroom Key
+IN 5, Bedroom Key
 
 Location: 3
-Name: BEGGING ROOM
-Description: YOU BEG FOR THIS TO BE OVER
-Contents: BFG
-SOUTH 1
-OUT 1
+Name: Castle East Wing
+Description: The castles east wing you notice an ancient dresser in the corner maybe theres a clue as to why shes locked herself away again...
+Contents: Rotting Dresser
+OUT 2
+WEST 2
 
+Location: 4
+Name: Castle West wing
+Description: The west wing of the castle , The kitchen has pots and pans scattered abaout... looks like someones left in a hurry. You notice a tiny glint coming from the windowsill...
+Contents: Bedroom Key
+OUT 2
+EAST 2
+
+Location: 5
+Name: Princess Hikkiko's Room
+Description: Hikkiko? Hikkiko isnt in her room?? but there is another letter...? (End of game for now!)
+Contents: Farewell Letter?
+OUT 2
+SOUTH 2

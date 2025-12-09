@@ -19,7 +19,7 @@ Item::Item(string n, string de) :
 	//destructor i think needed to make class checking work
 Item::~Item() {}
 
-	//Methods
+	//Getters
 string Item::getname() {
 		return name;
 	}
@@ -40,49 +40,49 @@ Container::Container(string n, string de, Item* k , list<Item*> cl) :
 			isopen = true;
 
 		for (Item* i : cl) {
-			additem(i);
+			additem(i); //adds items to contents during constructor
 		
 		}
 
 	}
 
-	//Methods
+	//Getters
 	list<Item*> Container::getcontents() {
 		return contents;
 	}
 	Item* Container::getkey() {
 		return containerKey;
 	}
-
-	void Container::open(Player* p, Location* l)
+	//Methods
+	void Container::open(Player* p,Location* l)
 	{
 		isopen = true;
-		vector<Item*> toMove;
-		if (p->hasItem(containerKey)) {
+		vector<Item*> toMove; //List of all item to move needed to split up so i can remove later
+		if (p->hasItem(containerKey)) { //check if you have key
 			cout << "You opened the " << getname() << " and found: " << endl;
 
 			for (Item* i : contents)
 			{
-				toMove.push_back(i);
+				toMove.push_back(i); //add it to list 
 			}
 
 			for (Item* i : toMove)
 			{
-				cout << "    " << i->getname() << endl;
+				cout << "    " << i->getname() << endl; 
 				contents.remove(i); //item taken out of container
-				l->additem(i);
-				p->takeItem(i); //adds item to location to stop player from softlocking
-				l->removeItem(this);
+				l->additem(i); //adds item to location so player can take it
+				p->takeItem(i); //Player takes item from location
+				l->removeItem(this); //removes the container from location might remove this.
 			}
 			cout << endl;
 		}
-		else {
-			cout << "You need a: " << containerKey->getname() << " To open this!";
+		else { //no key
+			cout << "You need a: " << containerKey->getname() << " To open this!"; //throw player explanation 
 		}
 	}
 
 	void Container::additem(Item* i)
 	{
 		//Check done before call
-		contents.push_back(i);
+		contents.push_back(i); //adds to contents 
 	}

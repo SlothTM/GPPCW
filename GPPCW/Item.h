@@ -43,7 +43,7 @@ public:
 	//Methods
 	list<Item*> getcontents();
 	Item* getkey();
-	void open(Player* p,Location* location);
+	void open(Player* p , Location* l);
 	void additem(Item* i);
 
 };
