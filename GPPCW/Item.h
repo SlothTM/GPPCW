@@ -39,7 +39,7 @@ private:
 
 public:
 	//Constructor
-	Container(string n, string de, Item* k = nullptr);
+	Container(string n, string de, Item* k = nullptr , list <Item*> cl = list<Item*>());
 	//Methods
 	list<Item*> getcontents();
 	Item* getkey();

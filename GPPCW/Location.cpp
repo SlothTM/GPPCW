@@ -14,10 +14,12 @@ Location::Location(int i, string n, string de, list <Item*> co, map <string, Loc
 		id(i),
 		name(n),
 		description(de),
-		contents(co),
 		connections(cn),
 		doorKey(dk)
 	{
+	for (Item* i : co) {
+		additem(i);
+	}
 	}
 
 

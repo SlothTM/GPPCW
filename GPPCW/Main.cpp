@@ -5,60 +5,397 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include <fstream>
 using namespace std;
+
+
 
 #include "Item.h"
 #include "Location.h"
 #include "Player.h"
 
-void readData() 
-{
+vector<Item*> createdItems;
+vector<Location*> createdLocations;
+map<int, Location*> locationById;
+
+Item* newItem(ifstream &f , string n) {
+    string cline;
+    string d;
+    string c;
+    list <Item*> tc;
+    Item* k = nullptr;
+    bool iscontainer = false;
+    bool locked = false;
+
+
+    while (getline(f, cline)) {
+        if (cline.substr(0, cline.find(": ")) == "Item") { //done
+            n = cline.substr(cline.find(": ") + 2);
+        }
+        else if (cline.substr(0, cline.find(": ")) == "Description") { //done
+            d = cline.substr(cline.find(": ") + 2);
+        }
+        else if (cline.substr(0, cline.find(": ")) == "Contents") {
+            iscontainer = true;
+            size_t start = cline.find(": ") + 2;
+            size_t end = cline.find(", ");
+
+
+            while (end != string::npos) {
+                c = cline.substr(start, end - start);
+                bool found = false;
+
+                for (Item* i : createdItems) {
+                    if (i->getname() == c) {
+                        tc.push_back(i);
+                        found = true;
+                        break;
+                    }
+
+                }
+                if (!found) {
+                    std::cout << "Content item \"" << c << "\" not created yet or doesn't exist. Check game data structure!" << std::endl;
+                    exit(EXIT_FAILURE);
+                }
+
+                start = end + 2;
+                end = cline.find(", " , start);
+            }
+
+            bool found = false;
+            c = cline.substr(start);
+            for (Item* i : createdItems) {
+                if (i->getname() == c) {
+                    tc.push_back(i);
+                    found = true;
+                    break;
+                }
+
+            }
+            if (!found) {
+                std::cout << "Content item \"" << c << "\" not created yet or doesn't exist. Check game data structure!" << std::endl;
+                exit(EXIT_FAILURE);
+            }
+        } 
+
+        else if (cline.substr(0, cline.find(": ")) == "Keys") { //done
+            locked = true;
+            for (Item* i : createdItems) {
+                if (i->getname() == cline.substr(cline.find(": ") + 2)) {
+                    k = i;
+                    break;
+                }
+            }
+
+            if (!k) {
+                cout << "key item " << c << " not created yet or doesn't exist check game data structure" << endl;
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        else if (cline.empty()){
+            break;
+        }
+    }
+
+    Item* newItem = nullptr;
+
+    if (iscontainer) {
+        if (!locked) {
+            k = nullptr; 
+        }
+
+        newItem =  new Container(n, d, k,tc);
+    }
+    else {
+        newItem = new Item(n, d);
+    }
+
+    createdItems.push_back(newItem);
+    return newItem;
+    
+}
+
+Location* newLocation(ifstream& f, int i) {
+    string cline;
+    string n;
+    string d;
+    string co;
+    int cn;
+    Item* cd = nullptr;
+    list <Item*> tc;
+    map <string, int> tempcn;
+    map <string, Item*> dk;
+
+    while (getline(f, cline)) {
+
+        if (cline.substr(0, cline.find(": ")) == "Name") {
+            n = cline.substr(cline.find(": ") + 2);
+        }
+
+        else if (cline.substr(0, cline.find(": ")) == "Description") {
+            d = cline.substr(cline.find(": ") + 2);
+        }
+
+        else if (cline.substr(0, cline.find(": ")) == "Contents") {
+            size_t start = cline.find(": ") + 2;
+            size_t end = cline.find(", ");
+
+
+            while (end != string::npos) {
+                co = cline.substr(start, end - start);
+                bool found = false;
+
+                for (Item* i : createdItems) {
+                    if (i->getname() == co) {
+                        tc.push_back(i);
+                        found = true;
+                        break;
+                    }
+
+                }
+                if (!found) {
+                    std::cout << "Content item \"" << co << "\" not created yet or doesn't exist. Check game data structure!" << std::endl;
+                    exit(EXIT_FAILURE);
+                }
+
+                start = end + 2;
+                end = cline.find(", ", start);
+            }
+
+            bool found = false;
+            co = cline.substr(start);
+            for (Item* i : createdItems) {
+                if (i->getname() == co) {
+                    tc.push_back(i);
+                    found = true;
+                    break;
+                }
+
+            }
+            if (!found) {
+                std::cout << "Content item \"" <<co<< "\" not created yet or doesn't exist. Check game data structure!" << std::endl;
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        else if (cline.substr(0, cline.find(" ")) == "NORTH") {
+            size_t start =  cline.find(" ") + 1;
+            size_t end = cline.find(", ");
+
+            if (end != string::npos) {
+                cn = stoi(cline.substr(start, end - start));
+
+
+                string keyCheck = cline.substr(end + 2);
+                
+
+                cd = nullptr;
+                bool found = false;
+
+                for (Item* i : createdItems) {
+                    if (i->getname() == keyCheck) {
+                        cd = i;
+                        dk["NORTH"] = cd;
+
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    cout << "key item " << keyCheck << " not created yet or doesn't exist check game data structure" << endl;
+                    exit(EXIT_FAILURE);
+                }
+            }
+
+            else {
+                cn = stoi(cline.substr(start));
+
+
+            }
+            tempcn["NORTH"] = cn;
+        }
+        else if (cline.substr(0, cline.find(" ")) == "EAST") {
+            size_t start = cline.find(" ") + 1;
+            size_t end = cline.find(", ");
+
+            if (end != string::npos) {
+                cn = stoi(cline.substr(start, end - start));
+
+
+                string keyCheck = cline.substr(end + 2);
+                
+
+                cd = nullptr;
+                bool found = false;
+
+                for (Item* i : createdItems) {
+                    if (i->getname() == keyCheck) {
+                        cd = i;
+                        dk["EAST"] = cd;
+
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    cout << "key item " << keyCheck << " not created yet or doesn't exist check game data structure" << endl;
+                    exit(EXIT_FAILURE);
+                }
+            }
+            else {
+                cn = stoi(cline.substr(start));
+
+
+            }
+            tempcn["EAST"] = cn;
+        }
+
+        else if (cline.substr(0, cline.find(" ")) == "SOUTH") {
+            size_t start = cline.find(" ") + 1;
+            size_t end = cline.find(", ");
+
+            if (end != string::npos) {
+                cn = stoi(cline.substr(start, end - start));
+
+
+                string keyCheck = cline.substr(end + 2);
+                
+
+                cd = nullptr;
+                bool found = false;
+
+                for (Item* i : createdItems) {
+                    if (i->getname() == keyCheck) {
+                        cd = i;
+                        dk["SOUTH"] = cd;
+
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    cout << "key item " << keyCheck << " not created yet or doesn't exist check game data structure" << endl;
+                    exit(EXIT_FAILURE);
+                }
+            }
+            else {
+                cn = stoi(cline.substr(start));
+
+
+            }
+            tempcn["SOUTH"] = cn;
+        }
+
+        else if (cline.substr(0, cline.find(" ")) == "WEST") {
+            size_t start = cline.find(" ") + 1;
+            size_t end = cline.find(", ");
+
+            if (end != string::npos) {
+                cn = stoi(cline.substr(start, end - start));
+
+                string keyCheck = cline.substr(end + 2);
+                
+
+                cd = nullptr;
+                bool found = false;
+
+                for (Item* i : createdItems) {
+                    if (i->getname() == keyCheck) {
+                        cd = i;
+                        dk["WEST"] = cd;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    cout << "key item " << keyCheck << " not created yet or doesn't exist check game data structure" << endl;
+                    exit(EXIT_FAILURE);
+                }
+            }
+            else {
+                cn = stoi(cline.substr(start));
+
+
+            }
+            tempcn["WEST"] = cn;
+        }
+
+
+        else if (cline.empty()) {
+            break;
+        }
+    }
+
+
+    Location* newLocal = new Location(i, n, d, tc, {}, dk);
+    createdLocations.push_back(newLocal);
+    locationById[i] = newLocal;
+
+    return newLocal;
 
 }
+void readData() 
+{
+    ifstream worldData("gameData.txt");
+    string classmarker;
+
+    while (getline(worldData, classmarker)) {
+
+        if (classmarker.substr(0,classmarker.find(": ")) == "Item") {
+            string itemname;
+            itemname = classmarker.substr(classmarker.find(": ") + 2);
+            newItem(worldData,itemname);
+        }
+        else if (classmarker.substr(0, classmarker.find(": ")) == "Location") {
+            int localid;
+            localid = stoi(classmarker.substr(classmarker.find(": ") + 2));
+            newLocation(worldData ,localid);
+        }
+        else if (classmarker.empty()) {
+            cout << "\n";
+        }
+        else {
+            cout << "attribute" << endl;
+        }
+
+    }
+    string north = "NORTH";
+
+    worldData.close();
+    cout << "Items succesfully created: " << endl;
+    for (Item* i : createdItems) {
+        cout << "    " << i->getname() << endl;
+    }
+    cout << "Locations succesfully created: " << endl;
+    for (Location* l : createdLocations) {
+        cout << "    " << l->getname() << endl;
+    }
+}
+
+
 int main() {
-    /*
+    
     // --- Create Items ---
-    Item* redKey = new Item("Red Key", "A small red key.");
-    Item* rope = new Item("Rope", "A sturdy rope.");
-    Container* chest = new Container("Chest", "An old wooden chest", redKey);
-    Item* gem = new Item("Gem", "A shiny gem");
-    string north = "north";
+    //Item* redKey = new Item("Red Key", "A small red key.");
+    //Item* rope = new Item("Rope", "A sturdy rope.");
+    //Container* chest = new Container("Chest", "An old wooden chest", redKey);
+    //Item* gem = new Item("Gem", "A shiny gem");
+
 
     // Add gem inside chest
-    chest->additem(gem);
+    //chest->additem(gem);
 
     // --- Create Locations ---
- 
-    list<Item*> loc1Items = {rope, chest};
-    list<Item*> loc2Items = {gem};
 
-    map<string, Location*> loc1Connections;
-    map<string, Location*> loc2Connections;
+    readData();
 
-    map<string, Item*> loc1DoorKeys;
-    map<string, Item*> loc2DoorKeys;
-
-    Location* alcove = new Location(1, "Small Alcove", "A cozy little alcove.", loc1Items, loc1Connections, loc1DoorKeys);
-    Location* hall = new Location(2, "Grand Hall", "A vast, echoing hall.", loc2Items, loc2Connections, loc2DoorKeys);
-
-    // Connect locations
-    alcove->getconnection(north); // will be nullptr for now
-    alcove->additem(redKey); // optional extra item
-    alcove->getconnection(north); // placeholder
-
-    // Connect alcove -> hall to north
-    alcove->getconnection(north); // placeholder
-
-    // Actually set the connection
-    alcove->getconnection(north); // placeholder
-
-    alcove->getcontents(); // demo
-
-    // Set player starting location
     list<Item*> playerInventory = {};
-    Player player(alcove, playerInventory);
-    */
-
+    Player player(createdLocations[0], playerInventory);
 
     bool quit = false;
 

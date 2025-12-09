@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="gameData.txt">
-      <Filter>Resource Files</Filter>
+      <Filter>Source Files</Filter>
     </Text>
   </ItemGroup>
 </Project>

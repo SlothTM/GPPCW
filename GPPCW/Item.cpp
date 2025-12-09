@@ -30,7 +30,7 @@ string Item::getdescription() {
 
 
 	//Constructor
-Container::Container(string n, string de, Item* k) :
+Container::Container(string n, string de, Item* k , list<Item*> cl) :
 	Item(n, de),
 	containerKey(k),
 	isopen(false)
@@ -38,6 +38,12 @@ Container::Container(string n, string de, Item* k) :
 	{
 		if (containerKey == nullptr) //No key container for like a character bag for example?
 			isopen = true;
+
+		for (Item* i : cl) {
+			additem(i);
+		
+		}
+
 	}
 
 	//Methods

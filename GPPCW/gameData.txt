@@ -1,3 +1,15 @@
+Item: Red Key
+Description: Where there is a red key there must be a red door
+
+Item: Letter
+Description: Its contents are in a language you dont understand.
+
+Item: Screwdriver
+Description: Could be useful to pry a box open.
+
+Item: Rubber Duck
+Description: Youve finally found it, your most prized posession.
+
 Item: Strongbox
 Description: A sturdy box. It has seen better times.
 Contents: Red Key, Letter
@@ -13,8 +25,7 @@ IN 2, Red Key
 
 Location: 2
 Name: Inside building
-Description: You are inside a building, a well house for a large
-spring.
+Description: You are inside a building, a well house for a large spring.
 Contents: Rubber Duck
 SOUTH 1
-OUT 
+
